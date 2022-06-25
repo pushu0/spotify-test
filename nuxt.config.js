@@ -1,4 +1,5 @@
 import colors from 'vuetify/es5/util/colors'
+const clientId = process.env.CLIENT_ID
 
 export default {
   // Disable server-side rendering: https://go.nuxtjs.dev/ssr-mode
@@ -41,12 +42,43 @@ export default {
   modules: [
     // https://go.nuxtjs.dev/axios
     '@nuxtjs/axios',
+    // https://auth.nuxtjs.org/guide/setup/
+    '@nuxtjs/auth-next',
   ],
 
   // Axios module configuration: https://go.nuxtjs.dev/config-axios
   axios: {
     // Workaround to avoid enforcing hard-coded localhost:3000: https://github.com/nuxt-community/axios-module/issues/308
     baseURL: '/',
+  },
+
+  auth: {
+    // Options
+    strategies: {
+      social: {
+        endpoints: {
+          authorization: 'https://accounts.spotify.com/authorize',
+          token: undefined,
+          userInfo: 'https://api.spotify.com/v1/me',
+          logout: 'http://localhost:3000/login',
+        },
+        scheme: '~/schemes/implicitGrantScheme',
+        token: {
+          type: 'Bearer',
+          property: 'access_token',
+          maxAge: 3600,
+        },
+        // scheme: 'oauth2',
+        responseType: 'token',
+        scope: ['user-read-recently-played'],
+        grantType: 'authorization_code',
+        // logoutRedirectUri: appBaseUrl,
+        clientId,
+        redirectUri: 'http://localhost:3000/callback',
+        show_dialog: true,
+        logoutRedirectUri: '/login',
+      },
+    },
   },
 
   // Vuetify module configuration: https://go.nuxtjs.dev/config-vuetify
