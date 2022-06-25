@@ -1,27 +1,26 @@
 <template>
   <v-container>
-    <v-btn @click="userLogin">Login with Spotify</v-btn>
+    <v-btn @click="login">Login with Spotify</v-btn>
   </v-container>
 </template>
-
 <script>
-export default {
-  data() {
-    return {
-      login: {
-        username: '',
-        password: '',
-      },
-    }
-  },
-  methods: {
-    async userLogin() {
+import { defineComponent, useContext } from '@nuxtjs/composition-api'
+
+export default defineComponent({
+  setup() {
+    const { $auth } = useContext()
+
+    const login = async () => {
       try {
-        await this.$auth.loginWith('custom')
+        await $auth.loginWith('custom')
       } catch (err) {
+        // TODO redirect to error page
         console.log(err)
       }
-    },
+    }
+    return {
+      login,
+    }
   },
-}
+})
 </script>
