@@ -55,14 +55,14 @@ export default {
   auth: {
     // Options
     strategies: {
-      social: {
+      custom: {
         endpoints: {
           authorization: 'https://accounts.spotify.com/authorize',
           token: undefined,
           userInfo: 'https://api.spotify.com/v1/me',
           logout: 'http://localhost:3000/login',
         },
-        scheme: '~/schemes/implicitGrantScheme',
+        scheme: '~/schemes/implicitGrantScheme.ts',
         token: {
           type: 'Bearer',
           property: 'access_token',
