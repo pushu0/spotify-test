@@ -1,9 +1,10 @@
 import colors from 'vuetify/es5/util/colors'
 const clientId = process.env.CLIENT_ID
+const baseURL = process.env.API_URL || 'https://api.spotify.com'
 
 export default {
   // Disable server-side rendering: https://go.nuxtjs.dev/ssr-mode
-  ssr: false,
+  ssr: true,
 
   // Global page headers: https://go.nuxtjs.dev/config-head
   head: {
@@ -51,7 +52,7 @@ export default {
   // Axios module configuration: https://go.nuxtjs.dev/config-axios
   axios: {
     // Workaround to avoid enforcing hard-coded localhost:3000: https://github.com/nuxt-community/axios-module/issues/308
-    baseURL: '/',
+    baseURL,
   },
 
   auth: {
@@ -70,17 +71,35 @@ export default {
           property: 'access_token',
           maxAge: 3600,
         },
-        // scheme: 'oauth2',
         responseType: 'token',
         scope: ['user-read-recently-played'],
         grantType: 'authorization_code',
-        // logoutRedirectUri: appBaseUrl,
         clientId,
         redirectUri: 'http://localhost:3000/callback',
         show_dialog: true,
         logoutRedirectUri: '/login',
       },
+      oauth: {
+        scheme: 'oauth2',
+        scope: ['user-read-recently-played'],
+        clientId,
+        endpoints: {
+          authorization: 'https://accounts.spotify.com/authorize',
+          token: {
+            url: 'https://accounts.spotify.com/api/token',
+            method: 'post',
+          },
+          userInfo: 'https://api.spotify.com/v1/me',
+          logout: 'http://localhost:3000/login',
+        },
+        codeChallengeMethod: 'S256',
+        redirectUri: 'http://localhost:3000/callback',
+      },
     },
+  },
+
+  router: {
+    middleware: ['auth'],
   },
 
   // Vuetify module configuration: https://go.nuxtjs.dev/config-vuetify
