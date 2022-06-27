@@ -1,87 +1,145 @@
 <template>
-  <v-row justify="center" align="center">
-    <v-col cols="12" sm="8" md="6">
-      <v-card class="logo py-4 d-flex justify-center">
-        <NuxtLogo />
-        <VuetifyLogo />
-      </v-card>
-      <v-card>
-        <v-card-title class="headline">
-          Welcome to the Vuetify + Nuxt.js template
-        </v-card-title>
-        <v-card-text>
-          <p>
-            Vuetify is a progressive Material Design component framework for
-            Vue.js. It was designed to empower developers to create amazing
-            applications.
-          </p>
-          <p>
-            For more information on Vuetify, check out the
-            <a
-              href="https://vuetifyjs.com"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              documentation </a
-            >.
-          </p>
-          <p>
-            If you have questions, please join the official
-            <a
-              href="https://chat.vuetifyjs.com/"
-              target="_blank"
-              rel="noopener noreferrer"
-              title="chat"
-            >
-              discord </a
-            >.
-          </p>
-          <p>
-            Find a bug? Report it on the github
-            <a
-              href="https://github.com/vuetifyjs/vuetify/issues"
-              target="_blank"
-              rel="noopener noreferrer"
-              title="contribute"
-            >
-              issue board </a
-            >.
-          </p>
-          <p>
-            Thank you for developing with Vuetify and I look forward to bringing
-            more exciting features in the future.
-          </p>
-          <div class="text-xs-right">
-            <em><small>&mdash; John Leider</small></em>
-          </div>
-          <hr class="my-3" />
-          <a
-            href="https://nuxtjs.org/"
-            target="_blank"
-            rel="noopener noreferrer"
+  <v-container fluid>
+    <v-row>
+      <v-col cols="auto">
+        <h1>
+          Most played tracks <span>{{ postTitle }}</span>
+        </h1>
+      </v-col>
+    </v-row>
+    <v-row>
+      <v-col cols="9">
+        <BaseListWithLoading
+          :items="trackList"
+          cols="3"
+          :loading-attrs="{ height: 300, type: 'card' }"
+        >
+          <template #default="{ item }">
+            <Track :item="item" />
+          </template>
+        </BaseListWithLoading>
+      </v-col>
+      <v-col cols="3" class="px-5 pt-4">
+        <v-row class="mb-5">
+          <h3 style="display: block">Most played artists</h3>
+          <v-btn
+            v-if="appliedArtistFilters.length"
+            small
+            icon
+            @click="clearFilters"
           >
-            Nuxt Documentation
-          </a>
-          <br />
-          <a
-            href="https://github.com/nuxt/nuxt.js"
-            target="_blank"
-            rel="noopener noreferrer"
+            <v-icon>mdi-close</v-icon>
+          </v-btn>
+        </v-row>
+        <v-row>
+          <BaseListWithLoading
+            :items="artistsList"
+            tag="div"
+            class="flex-column"
           >
-            Nuxt GitHub
-          </a>
-        </v-card-text>
-        <v-card-actions>
-          <v-spacer />
-          <v-btn color="primary" nuxt to="/inspire"> Continue </v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-col>
-  </v-row>
+            <template #default="{ item }">
+              <ArtistListItem
+                :name="item.name"
+                :is-selected="isFilterApplied(item.id)"
+                @click="handleFilter(item.id)"
+              />
+            </template>
+          </BaseListWithLoading>
+        </v-row>
+      </v-col>
+    </v-row>
+  </v-container>
 </template>
+<script lang="ts">
+import {
+  defineComponent,
+  onMounted,
+  useRouter,
+  useStore,
+  computed,
+} from '@nuxtjs/composition-api'
+import { mapTrackToSimplifiedTrack } from '~/utils/trackUtils'
+import { useRouteFilter } from '~/compositions/useRouteFilter'
+import BaseListWithLoading from '~/components/BaseListWithLoading.vue'
+import ArtistListItem from '~/components/Artist.vue'
+import Track from '~/components/Track.vue'
 
-<script>
-export default {
+const ARTISTS_FILTER_KEY = 'artists'
+
+export default defineComponent({
   name: 'IndexPage',
-}
+  components: { BaseListWithLoading, Track, ArtistListItem },
+  setup() {
+    const store = useStore()
+    const router = useRouter()
+
+    const trackList = computed<SpotifyApi.TrackObjectFull[]>(
+      () => store.getters['tracks/list']
+    )
+    const artistsList = computed(() => store.getters['artists/list'])
+    const artistsCollection = computed(
+      () => store.getters['artists/collection']
+    )
+
+    const {
+      applied: appliedArtistFilters,
+      isApplied: isFilterApplied,
+      toggle: toggleFilter,
+    } = useRouteFilter(ARTISTS_FILTER_KEY)
+
+    const filteredList = computed(() =>
+      appliedArtistFilters.value.length
+        ? trackList.value.filter((track) =>
+            track.artists.some(({ id }) =>
+              appliedArtistFilters.value.includes(id)
+            )
+          )
+        : trackList.value
+    )
+
+    const fetchTracks = () => store.dispatch('tracks/fetchRecent')
+
+    onMounted(() => {
+      fetchTracks()
+      setInterval(fetchTracks, 30000)
+    })
+
+    const applyArtistFilter = (items: string[]) =>
+      router.push({
+        name: router.currentRoute.name!,
+        query: {
+          ...router.currentRoute.query,
+          [ARTISTS_FILTER_KEY]: items,
+        },
+      })
+
+    return {
+      trackList: computed(() =>
+        filteredList.value.map(mapTrackToSimplifiedTrack)
+      ),
+      artistsList,
+      appliedArtistFilters,
+      isFilterApplied,
+      handleFilter: (filter: string) => {
+        const query = toggleFilter(filter)
+        applyArtistFilter(query)
+      },
+
+      clearFilters: () => applyArtistFilter([]),
+
+      postTitle: computed(() =>
+        appliedArtistFilters.value.length && artistsList.value.length
+          ? `by ${appliedArtistFilters.value
+              .map((id) => artistsCollection.value[id].name)
+              .join(', ')}`
+          : ''
+      ),
+    }
+  },
+})
 </script>
+<style scoped>
+h1 span {
+  color: #7d7d7d;
+}
+</style>
