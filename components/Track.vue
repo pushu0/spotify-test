@@ -1,9 +1,9 @@
 <template>
-  <v-card height="300" rounded="lg" light>
+  <v-card :height="height" rounded="lg" light>
     <v-img
       :src="item.imageUrl"
       transition="fade-transition"
-      height="300"
+      :height="height"
       class="grey darken-4 scaled"
       content-class="content"
     >
@@ -35,8 +35,12 @@ export default defineComponent({
         imageUrl: '',
       }),
     },
+    height: {
+      type: Number,
+      required: false,
+      default: 300,
+    },
   },
-  setup() {},
 })
 </script>
 <style scoped>
