@@ -14,6 +14,9 @@ module.exports = {
   collectCoverageFrom: [
     '<rootDir>/components/**/*.vue',
     '<rootDir>/pages/**/*.vue',
+    '<rootDir>/tests/**/*.ts',
   ],
-  testEnvironment: 'jsdom',
+  transformIgnorePatterns: ['<rootDir>../node_modules/(?!vuetify)'],
+  testEnvironment: 'jest-environment-jsdom-latest',
+  // setupFiles: ['<rootDir>/tests/unit/index.ts'],
 }

@@ -15,7 +15,14 @@
       "~/*": ["./*"],
       "@/*": ["./*"]
     },
-    "types": ["@nuxt/types", "@nuxtjs/axios", "@types/node", "@nuxtjs/auth-next","@types/spotify-api"]
+    "types": [
+      "@nuxt/types",
+      "@nuxtjs/axios",
+      "@types/node",
+      "@nuxtjs/auth-next",
+      "@types/spotify-api",
+      "@types/jest"
+    ]
   },
   "exclude": ["node_modules", ".nuxt", "dist"]
 }
