@@ -19,7 +19,7 @@
           </template>
         </BaseListWithLoading>
       </v-col>
-      <v-col cols="3" class="px-5 pt-4">
+      <v-col cols="3" class="px-5 pt-4 mt-3">
         <v-row class="mb-5">
           <h3 style="display: block">Most played artists</h3>
           <v-btn
