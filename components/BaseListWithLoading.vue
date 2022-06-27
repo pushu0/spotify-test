@@ -1,5 +1,5 @@
 <template>
-  <v-container class="d-flex" style="flex-wrap: wrap" align="center">
+  <v-container class="d-flex ma-0 pa-0" style="flex-wrap: wrap" align="center">
     <template v-if="!items.length">
       <component
         :is="tag"
@@ -14,7 +14,12 @@
       </component>
     </template>
     <template v-else>
-      <component :is="tag" v-for="item in items" :key="item.id" v-bind="$attrs">
+      <component
+        :is="tag"
+        v-for="(item, index) in items"
+        :key="item.id || index"
+        v-bind="$attrs"
+      >
         <slot :item="item" />
       </component>
     </template>
@@ -36,11 +41,6 @@ export default defineComponent({
       type: String,
       required: false,
       default: 'v-col',
-    },
-    tagAttrs: {
-      type: Object,
-      required: false,
-      default: () => ({}),
     },
     loadingItems: {
       type: Number,
