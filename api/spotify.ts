@@ -5,6 +5,6 @@ export class SpotifyApi extends BaseNuxtApi {
   getRecentlyPlayedTracks(): Promise<
     SpotifyApi.PagingObject<SpotifyApi.PlayHistoryObject>
   > {
-    return this.axios.$get('/v1/me/player/recently-played' + query)
+    return this.axios.$get('/v1/me/player/recently-played')
   }
 }
