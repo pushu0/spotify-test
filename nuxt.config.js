@@ -65,6 +65,7 @@ export default {
           userInfo: 'https://api.spotify.com/v1/me',
           logout: 'http://localhost:3000/login',
         },
+        // doesn't need server side validation so works with ssr false
         scheme: '~/schemes/implicitGrantScheme.ts',
         token: {
           type: 'Bearer',
@@ -72,7 +73,11 @@ export default {
           maxAge: 3600,
         },
         responseType: 'token',
-        scope: ['user-read-recently-played', 'user-read-currently-playing','user-read-playback-state'],
+        scope: [
+          'user-read-recently-played',
+          'user-read-currently-playing',
+          'user-read-playback-state',
+        ],
         grantType: 'authorization_code',
         clientId,
         redirectUri: 'http://localhost:3000/callback',
@@ -80,8 +85,13 @@ export default {
         logoutRedirectUri: '/login',
       },
       oauth: {
+        // needs server side validation, so ssr: true
         scheme: 'oauth2',
-        scope: ['user-read-recently-played', 'user-read-currently-playing','user-read-playback-state'],
+        scope: [
+          'user-read-recently-played',
+          'user-read-currently-playing',
+          'user-read-playback-state',
+        ],
         clientId,
         endpoints: {
           authorization: 'https://accounts.spotify.com/authorize',
