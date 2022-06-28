@@ -1,5 +1,7 @@
 import { GetterTree, ActionTree, MutationTree } from 'vuex'
 import { Collection } from '~/types/index'
+import { addItemToCollection } from '~/utils'
+import { isTrack } from '~/utils/trackUtils'
 
 interface RootState {
   collection: Collection<SpotifyApi.TrackObjectFull>
@@ -16,9 +18,15 @@ export const getters: GetterTree<RootState, RootState> = {
 }
 
 export const mutations: MutationTree<RootState> = {
+  upsertItem: (state, track: SpotifyApi.TrackObjectFull) => {
+    state.collection = {
+      [track.id]: track,
+      ...state.collection,
+    }
+  },
   setCollection: (state, newCollection: SpotifyApi.TrackObjectFull[]) => {
     state.collection = newCollection.reduce(
-      (collection, track) => ({ ...collection, [track.id]: track }),
+      addItemToCollection,
       {}
     )
   },
@@ -38,5 +46,19 @@ export const actions: ActionTree<RootState, RootState> = {
 
     commit('setCollection', tracks)
     commit('artists/setCollection', artists, { root: true })
+  },
+
+  async fetchCurrentlyPlaying({ commit }) {
+    const result = await this.$api.spotify.getCurrentlyPlayingTrack()
+
+    if (result.is_playing) {
+      commit('upsertItem', result.item)
+      // podcast don't have artists
+      if (isTrack(result.item))
+        commit('artists/upsertItem', result.item.artists, {
+          root: true,
+        })
+    }
+    return result
   },
 }

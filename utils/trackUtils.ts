@@ -10,3 +10,7 @@ export const mapTrackToSimplifiedTrack = (
     imageUrl,
   }
 }
+
+
+export const isTrack = (item: SpotifyApi.CurrentlyPlayingObject['item']): item is SpotifyApi.TrackObjectFull =>
+item?.type === 'track'
