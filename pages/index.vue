@@ -65,6 +65,7 @@ import ArtistListItem from '~/components/Artist.vue'
 import Track from '~/components/Track.vue'
 
 const ARTISTS_FILTER_KEY = 'artists'
+const CURRENTLY_PLAYING_REFRESH_RATE = 15000
 
 export default defineComponent({
   name: 'IndexPage',
@@ -98,10 +99,12 @@ export default defineComponent({
     )
 
     const fetchTracks = () => store.dispatch('tracks/fetchRecent')
+    const fetchCurrentlyPlaying = () => store.dispatch('tracks/fetchCurrentlyPlaying')
 
     onMounted(() => {
       fetchTracks()
-      setInterval(fetchTracks, 30000)
+      fetchCurrentlyPlaying()
+      setInterval(fetchCurrentlyPlaying, CURRENTLY_PLAYING_REFRESH_RATE)
     })
 
     const applyArtistFilter = (items: string[]) =>
