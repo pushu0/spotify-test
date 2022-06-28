@@ -1,5 +1,11 @@
 <template>
-  <div>Loading</div>
+  <v-container
+    fluid
+    style="height: 100vh"
+    class="d-flex justify-center align-center"
+  >
+    <v-progress-circular :size="50" indeterminate />
+  </v-container>
 </template>
 <script lang="ts">
 import {
@@ -15,11 +21,15 @@ export default defineComponent({
     const router = useRouter()
 
     onMounted(() => {
-      $auth.refreshTokens()
       const { valid } = $auth.check()
-      // TODO redirect to error page
+
       if (!valid) {
+        // eslint-disable-next-line no-console
         console.error('Ooops, something went wrong')
+        router.push({
+          name: 'error',
+          params: { error: 'Authentication failed' },
+        })
         return
       }
       router.push('/')

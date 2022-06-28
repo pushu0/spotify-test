@@ -5,28 +5,27 @@
   </v-container>
 </template>
 <script>
-import { defineComponent, useContext } from '@nuxtjs/composition-api'
+import { defineComponent, useContext, useRouter } from '@nuxtjs/composition-api'
 
 export default defineComponent({
   auth: 'guest',
   setup() {
     const { $auth } = useContext()
+    const router = useRouter()
 
     const login = async () => {
       try {
         await $auth.loginWith('custom')
-      } catch (err) {
-        // TODO redirect to error page
-        console.log(err)
+      } catch (error) {
+        router.push({ name: 'error', params: { error } })
       }
     }
 
     const login2 = async () => {
       try {
         await $auth.loginWith('oauth')
-      } catch (err) {
-        // TODO redirect to error page
-        console.log(err)
+      } catch (error) {
+        router.push({ name: 'error', params: { error } })
       }
     }
     return {
