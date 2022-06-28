@@ -27,9 +27,11 @@
 </template>
 <script lang="ts">
 import { defineComponent } from '@nuxtjs/composition-api'
+import { VCol, VRow } from 'vuetify/lib'
 
 export default defineComponent({
   name: 'BaseList',
+  components: { VCol, VRow },
   inheritAttrs: false,
   props: {
     items: {
