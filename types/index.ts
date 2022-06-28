@@ -3,6 +3,7 @@ export type Collection<Type> = {
 }
 
 export interface SimplifiedTrack {
+  id: string,
   name: string
   artists: string
   imageUrl: string

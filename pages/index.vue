@@ -15,7 +15,7 @@
           :loading-attrs="{ height: 300, type: 'card' }"
         >
           <template #default="{ item }">
-            <Track :item="item" />
+            <Track :item="item" :is-playing="currentlyPlayingTrackId === item.id"/>
           </template>
         </BaseListWithLoading>
       </v-col>
@@ -77,6 +77,7 @@ export default defineComponent({
     const trackList = computed<SpotifyApi.TrackObjectFull[]>(
       () => store.getters['tracks/list']
     )
+    const currentlyPlayingTrackId = computed(() => store.getters['tracks/playing'])
     const artistsList = computed(() => store.getters['artists/list'])
     const artistsCollection = computed(
       () => store.getters['artists/collection']
@@ -121,13 +122,14 @@ export default defineComponent({
         filteredList.value.map(mapTrackToSimplifiedTrack)
       ),
       artistsList,
+      currentlyPlayingTrackId,
+
       appliedArtistFilters,
       isFilterApplied,
       handleFilter: (filter: string) => {
         const query = toggleFilter(filter)
         applyArtistFilter(query)
       },
-
       clearFilters: () => applyArtistFilter([]),
 
       postTitle: computed(() =>

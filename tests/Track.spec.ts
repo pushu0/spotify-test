@@ -42,7 +42,7 @@ describe('Track', () => {
     expect(wrapper.find('v-img').attributes('src')).toBe('someOtherUrl')
     expect(wrapper.find('v-card').attributes('height')).toBe('100')
   })
-  test('name and artists are correctly displayed and contained within the image', () => {
+  test('name and artists are correctly displayede', () => {
     const wrapper = mount(Track, {
       propsData: {
         item: {
@@ -56,5 +56,24 @@ describe('Track', () => {
     expect(wrapper.find('v-card-title').text()).toBe('James')
     expect(wrapper.find('v-card-subtitle').exists()).toBe(true)
     expect(wrapper.find('v-card-subtitle').text()).toBe('By: Bond, 007')
+  })
+
+  test('is playing prop and styling', () => {
+    const wrapper = mount(Track, {
+      propsData: {
+        item: {
+          name: 'James',
+          artists: 'Bond, 007',
+        },
+        isPlaying: true
+      },
+    })
+
+    expect(wrapper.find('v-icon').exists()).toBe(true)
+    expect(wrapper.find('v-icon').text()).toBe('mdi-play')
+    expect(wrapper.find('v-icon').classes().includes('playing-icon')).toBe(true)
+    expect(wrapper.find('v-icon').classes().includes('elevation-3')).toBe(true)
+    expect(wrapper.find('v-card').classes().includes('is-playing')).toBe(true)
+    expect(wrapper.find('v-card').attributes('elevation')).toBe('24')
   })
 })

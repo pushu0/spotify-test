@@ -5,6 +5,7 @@ export const mapTrackToSimplifiedTrack = (
 ): SimplifiedTrack => {
   const imageUrl = track.album.images[0].url
   return {
+    id: track.id,
     name: track.name,
     artists: track.artists.map(({ name }) => name).join(', '),
     imageUrl,

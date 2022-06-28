@@ -5,19 +5,24 @@ import { isTrack } from '~/utils/trackUtils'
 
 interface RootState {
   collection: Collection<SpotifyApi.TrackObjectFull>
-  filters: Record<keyof SpotifyApi.TrackObjectFull, string[]>
+  playing: SpotifyApi.TrackObjectFull['id'] | null
 }
 
 export const state = () => ({
   collection: {},
+  playing: null,
 })
 
 export const getters: GetterTree<RootState, RootState> = {
   collection: (state) => state.collection,
   list: (state) => Object.values(state.collection),
+  playing: (state) => state.playing,
 }
 
 export const mutations: MutationTree<RootState> = {
+  setPlaying: (state, id: SpotifyApi.TrackObjectFull['id'] | null) => {
+    state.playing = id
+  },
   upsertItem: (state, track: SpotifyApi.TrackObjectFull) => {
     state.collection = {
       [track.id]: track,
@@ -25,10 +30,7 @@ export const mutations: MutationTree<RootState> = {
     }
   },
   setCollection: (state, newCollection: SpotifyApi.TrackObjectFull[]) => {
-    state.collection = newCollection.reduce(
-      addItemToCollection,
-      {}
-    )
+    state.collection = newCollection.reduce(addItemToCollection, {})
   },
 }
 
@@ -54,10 +56,14 @@ export const actions: ActionTree<RootState, RootState> = {
     if (result.is_playing) {
       commit('upsertItem', result.item)
       // podcast don't have artists
-      if (isTrack(result.item))
+      if (isTrack(result.item)) {
+        commit('setPlaying', result.item.id)
         commit('artists/upsertItem', result.item.artists, {
           root: true,
         })
+      }
+    } else {
+      commit('setPlaying', null)
     }
     return result
   },
