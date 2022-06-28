@@ -1,7 +1,25 @@
 <template>
-  <v-container>
-    <v-btn @click="login">Login with Spotify</v-btn>
-    <v-btn @click="login2">Login with Spotify 2</v-btn>
+  <v-container
+    fluid
+    style="height: 100vh"
+    class="d-flex flex-column justify-center align-center"
+  >
+    <div class="d-flex flex-column justify-center align-center">
+      <v-row></v-row>
+      <v-row>
+        <v-col>
+          <v-btn @click="login"
+            >Login with implicit grant
+            <v-icon class="ml-3">mdi-spotify</v-icon></v-btn
+          >
+        </v-col>
+        <v-col>
+          <v-btn @click="login2"
+            >Login with OAUth2 <v-icon class="ml-3">mdi-spotify</v-icon></v-btn
+          >
+        </v-col>
+      </v-row>
+    </div>
   </v-container>
 </template>
 <script>
