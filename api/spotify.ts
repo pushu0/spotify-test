@@ -7,4 +7,8 @@ export class SpotifyApi extends BaseNuxtApi {
   > {
     return this.axios.$get('/v1/me/player/recently-played')
   }
+
+  getCurrentlyPlayingTrack(): Promise<SpotifyApi.CurrentlyPlayingObject>{
+    return this.axios.$get('/v1/me/player/currently-playing')
+  }
 }

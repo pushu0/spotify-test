@@ -72,7 +72,7 @@ export default {
           maxAge: 3600,
         },
         responseType: 'token',
-        scope: ['user-read-recently-played'],
+        scope: ['user-read-recently-played', 'user-read-currently-playing','user-read-playback-state'],
         grantType: 'authorization_code',
         clientId,
         redirectUri: 'http://localhost:3000/callback',
@@ -81,7 +81,7 @@ export default {
       },
       oauth: {
         scheme: 'oauth2',
-        scope: ['user-read-recently-played'],
+        scope: ['user-read-recently-played', 'user-read-currently-playing','user-read-playback-state'],
         clientId,
         endpoints: {
           authorization: 'https://accounts.spotify.com/authorize',
