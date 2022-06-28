@@ -1,7 +1,20 @@
-import { mount } from '@vue/test-utils'
+import { createLocalVue, mount, Wrapper } from '@vue/test-utils'
+import Vue from 'vue'
+import Vuetify from 'vuetify'
 import BaseListWithLoading from '~/components/BaseListWithLoading.vue'
+Vue.use(Vuetify)
 
 describe('BaseListWithLoading', () => {
+  const localVue = createLocalVue()
+  let wrapper: Wrapper<Vue, Element>
+
+  beforeEach(() => {
+    wrapper = mount(BaseListWithLoading, {
+      localVue,
+      vuetify: new Vuetify(),
+    })
+  })
+
   const defaults = {
     items: [],
     tag: 'v-col',
@@ -13,8 +26,6 @@ describe('BaseListWithLoading', () => {
   }
 
   test('is a Vue instance defaulting correctly', () => {
-    const wrapper = mount(BaseListWithLoading)
-
     expect(wrapper.vm).toBeTruthy()
     expect(wrapper.props().items).toEqual(defaults.items)
     expect(wrapper.props().tag).toEqual(defaults.tag)
@@ -22,39 +33,38 @@ describe('BaseListWithLoading', () => {
     expect(wrapper.props().loadingAttrs).toEqual(defaults.loadingAttrs)
   })
   test('no items received to use a skeleton loader', () => {
-    const wrapper = mount(BaseListWithLoading)
 
     expect(wrapper.props().items.length).toBe(0)
-    expect(wrapper.find('v-skeleton-loader').exists()).toBe(true)
-    expect(wrapper.find('v-skeleton-loader').attributes('height')).toEqual(
-      defaults.loadingAttrs.height.toString()
+    expect(wrapper.find('.v-skeleton-loader').exists()).toBe(true)
+    expect(wrapper.find('.v-skeleton-loader').attributes('style')).toContain(
+      `height: ${defaults.loadingAttrs.height.toString()}`
     )
-    expect(wrapper.find('v-skeleton-loader').attributes('type')).toEqual(
-      defaults.loadingAttrs.type.toString()
+    expect(wrapper.find(`.v-skeleton-loader__${defaults.loadingAttrs.type.toString()}`).exists()).toBe(
+      true
     )
-    expect(wrapper.findAll('v-skeleton-loader').length).toBe(
+    expect(wrapper.findAll('.v-skeleton-loader').length).toBe(
       defaults.loadingItems
     )
   })
   test('wrapper component is the correct tag', async () => {
     const wrapper = mount(BaseListWithLoading)
-
-    expect(wrapper.find(defaults.tag).exists()).toBe(true)
-    expect(wrapper.findAll(defaults.tag).length).toBe(
+    expect(wrapper.find('.col').exists()).toBe(true)
+    expect(wrapper.findAll(`.col`).length).toBe(
       defaults.loadingItems + defaults.items.length
     )
     await wrapper.setProps({
-      tag: 'div',
+      tag: 'p',
       loadingItems: 3,
     })
-    expect(wrapper.find('div').exists()).toBe(true)
-    expect(wrapper.findAll('div').length).toBe(3)
+    expect(wrapper.find('p').exists()).toBe(true)
+    expect(wrapper.findAll('p').length).toBe(3)
     await wrapper.setProps({
-      tag: 'div',
+      tag: 'h1',
       items: [{ empty: 'object' }],
     })
-    expect(wrapper.find('div').exists()).toBe(true)
-    expect(wrapper.findAll('div').length).toBe(1)
+    // await Vue.nextTick()
+    expect(wrapper.find('h1').exists()).toBe(true)
+    expect(wrapper.findAll('h1').length).toBe(1)
   })
   test('slot prop passed to a scoped slot', () => {
     const wrapper = mount(BaseListWithLoading, {

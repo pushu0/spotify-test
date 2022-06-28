@@ -1,42 +1,47 @@
-import { mount } from '@vue/test-utils'
+import { createLocalVue, mount, Wrapper } from '@vue/test-utils'
+import Vuetify from 'vuetify'
 import Artist from '~/components/Artist.vue'
 
 describe('Artist', () => {
+  const localVue = createLocalVue()
+  let wrapper: Wrapper<Vue, Element>
+
+  beforeEach(() => {
+    wrapper = mount(Artist, {
+      localVue,
+      vuetify: new Vuetify(),
+    })
+  })
+
   test('is a Vue instance defaulting correctly', () => {
-    const wrapper = mount(Artist)
+    // const wrapper = mount(Artist)
 
     expect(wrapper.vm).toBeTruthy()
     expect(wrapper.props().name).toBe('')
-    expect(wrapper.find('v-icon').exists()).toBe(true)
-    expect(wrapper.find('v-icon').text()).toBe('mdi-plus')
+    expect(wrapper.find('.v-icon').exists()).toBe(true)
+    expect(wrapper.find('.v-icon').html()).toContain('mdi-plus')
   })
   test('props are received and displayed correctly', async () => {
-    const wrapper = mount(Artist, {
-      propsData: { name: 'James', isSelected: false },
-    })
+    await wrapper.setProps({ name: 'James', isSelected: false })
 
     expect(wrapper.props().name).toBe('James')
-    expect(wrapper.find('v-icon').text()).toBe('mdi-plus')
+    expect(wrapper.find('.v-icon').html()).toContain('mdi-plus')
     await wrapper.setProps({ isSelected: true })
-    expect(wrapper.find('v-icon').text()).toBe('mdi-check')
+    expect(wrapper.find('.v-icon').html()).toContain('mdi-check')
   })
 
   test('emits click event on button press', async () => {
-    const wrapper = mount(Artist)
-
-    expect(wrapper.find('v-btn').exists()).toBe(true)
-    await wrapper.find('v-btn').trigger('click')
+    expect(wrapper.find('.v-btn').exists()).toBe(true)
+    await wrapper.find('.v-btn').trigger('click')
     expect(wrapper.emitted()).toHaveProperty('click')
   })
 
   test('button has correct class depending on prop', async () => {
-    const wrapper = mount(Artist)
-
-    expect(wrapper.find('v-btn').exists()).toBe(true)
-    expect(wrapper.find('v-btn').classes().includes('selected')).toBe(false)
+    expect(wrapper.find('.v-btn').exists()).toBe(true)
+    expect(wrapper.find('.v-btn').classes().includes('selected')).toBe(false)
     await wrapper.setProps({
       isSelected: true,
     })
-    expect(wrapper.find('v-btn').classes().includes('selected')).toBe(true)
+    expect(wrapper.find('.v-btn').classes().includes('selected')).toBe(true)
   })
 })

@@ -19,4 +19,5 @@ module.exports = {
   transformIgnorePatterns: ['<rootDir>../node_modules/(?!vuetify)'],
   testEnvironment: 'jest-environment-jsdom-latest',
   // setupFiles: ['<rootDir>/tests/unit/index.ts'],
+  setupFilesAfterEnv: ['<rootDir>/tests/setup.js'],
 }
