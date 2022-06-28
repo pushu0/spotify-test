@@ -64,15 +64,12 @@ describe('Track', () => {
 
   test('is playing prop and styling', async () => {
     await wrapper.setProps({
-
-        item: {
-          name: 'James',
-          artists: 'Bond, 007',
-        },
-        isPlaying: true,
-
+      item: {
+        name: 'James',
+        artists: 'Bond, 007',
+      },
+      isPlaying: true,
     })
-    console.log(wrapper.html())
     expect(wrapper.find('.v-icon').exists()).toBe(true)
     expect(wrapper.find('.v-icon').html()).toContain('mdi-play')
     expect(wrapper.find('.v-icon').classes().includes('playing-icon')).toBe(
@@ -80,6 +77,8 @@ describe('Track', () => {
     )
     expect(wrapper.find('.v-icon').classes().includes('elevation-3')).toBe(true)
     expect(wrapper.find('.v-card').classes().includes('is-playing')).toBe(true)
-    expect(wrapper.find('.v-card').classes().includes('elevation-24')).toBe(true)
+    expect(wrapper.find('.v-card').classes().includes('elevation-24')).toBe(
+      true
+    )
   })
 })

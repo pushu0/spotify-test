@@ -14,8 +14,6 @@ describe('Artist', () => {
   })
 
   test('is a Vue instance defaulting correctly', () => {
-    // const wrapper = mount(Artist)
-
     expect(wrapper.vm).toBeTruthy()
     expect(wrapper.props().name).toBe('')
     expect(wrapper.find('.v-icon').exists()).toBe(true)
@@ -23,7 +21,6 @@ describe('Artist', () => {
   })
   test('props are received and displayed correctly', async () => {
     await wrapper.setProps({ name: 'James', isSelected: false })
-
     expect(wrapper.props().name).toBe('James')
     expect(wrapper.find('.v-icon').html()).toContain('mdi-plus')
     await wrapper.setProps({ isSelected: true })
