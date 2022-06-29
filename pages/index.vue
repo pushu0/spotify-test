@@ -8,18 +8,23 @@
       </v-col>
     </v-row>
     <v-row>
-      <v-col cols="9">
+      <v-col cols="7" md="9">
         <BaseListWithLoading
           :items="trackList"
-          cols="3"
+          cols="12"
+          md="4"
+          lg="3"
           :loading-attrs="{ height: 300, type: 'card' }"
         >
           <template #default="{ item }">
-            <Track :item="item" :is-playing="currentlyPlayingTrackId === item.id"/>
+            <Track
+              :item="item"
+              :is-playing="currentlyPlayingTrackId === item.id"
+            />
           </template>
         </BaseListWithLoading>
       </v-col>
-      <v-col cols="3" class="px-5 pt-4 mt-3">
+      <v-col cols="5" md="3" class="px-5 pt-4 mt-3">
         <v-row class="mb-5">
           <h3 style="display: block">Most played artists</h3>
           <v-btn
@@ -77,7 +82,9 @@ export default defineComponent({
     const trackList = computed<SpotifyApi.TrackObjectFull[]>(
       () => store.getters['tracks/list']
     )
-    const currentlyPlayingTrackId = computed(() => store.getters['tracks/playing'])
+    const currentlyPlayingTrackId = computed(
+      () => store.getters['tracks/playing']
+    )
     const artistsList = computed(() => store.getters['artists/list'])
     const artistsCollection = computed(
       () => store.getters['artists/collection']
@@ -100,7 +107,8 @@ export default defineComponent({
     )
 
     const fetchTracks = () => store.dispatch('tracks/fetchRecent')
-    const fetchCurrentlyPlaying = () => store.dispatch('tracks/fetchCurrentlyPlaying')
+    const fetchCurrentlyPlaying = () =>
+      store.dispatch('tracks/fetchCurrentlyPlaying')
 
     onMounted(() => {
       fetchTracks()
