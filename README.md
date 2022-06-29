@@ -33,7 +33,9 @@ For security reasons I've added the option to login via the `OAuth2` standard wi
 - logout functionality
 - pagination or infinite scrolling
 - deep link to play the tracks when clicking on them
+- more testing (store, api)
 
 ### Tradeoffs
 
 - using Vuetify adds a lot of weight, probably for this small app a much better choice would've been a css only library
+- using `component is: ` along with a Vuetify component, doesn't play nicely unless treeshaking is disabled or the respective components get imported individually, which then causes an issue when transpiling in jest - thus for the purpose of this exercise I've disabled vuetify treeshaking
