@@ -62,6 +62,7 @@ import {
   useRouter,
   useStore,
   computed,
+  watch,
 } from '@nuxtjs/composition-api'
 import { mapTrackToSimplifiedTrack } from '~/utils/trackUtils'
 import { useRouteFilter } from '~/compositions/useRouteFilter'
@@ -124,6 +125,10 @@ export default defineComponent({
           [ARTISTS_FILTER_KEY]: items,
         },
       })
+
+    watch(currentlyPlayingTrackId, (oldTrack, newTrack) => {
+      if (!!oldTrack && !!newTrack && oldTrack !== newTrack) fetchTracks()
+    })
 
     return {
       trackList: computed(() =>
