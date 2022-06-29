@@ -31,6 +31,7 @@ For security reasons I've added the option to login via the `OAuth2` standard wi
 ### Future Improvements
 
 - logout functionality
+- refetch recently played tracks when currently played song changes
 - pagination or infinite scrolling
 - deep link to play the tracks when clicking on them
 - more testing (store, api)
